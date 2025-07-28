@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="scroll-behavior: smooth;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +16,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            padding-top: 80px; /* Account for fixed header */
         }
         
         /* Custom spinning animation for loading spinner */
@@ -34,109 +35,243 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen py-8 px-4">
-    <div class="max-w-2xl mx-auto">
-        <!-- Main Container -->
-        <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
-            <!-- Title -->
-            <h1 class="text-4xl font-bold text-center text-gray-800 mb-4">
-                Biology Word Breaker
-            </h1>
-            
-            <!-- Description -->
-            <p class="text-lg text-gray-600 text-center mb-8 leading-relaxed">
-                Enter a biology term to break it down into its prefix, root, and suffix components. 
-                Discover the meaning behind complex scientific vocabulary with AI-powered analysis.
-            </p>
-            
-            <!-- Input Section -->
-            <div class="space-y-4 mb-8">
-                <div class="relative">
-                    <input 
-                        type="text" 
-                        id="biologyWordInput" 
-                        placeholder="e.g., Photosynthesis"
-                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 text-lg"
-                    >
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <!-- Fixed Header -->
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-lg z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo/Title -->
+                <div class="flex items-center">
+                    <h1 class="text-2xl md:text-3xl font-bold text-indigo-600">
+                        BioWord Breaker
+                    </h1>
                 </div>
                 
-                <button 
-                    id="breakWordButton"
-                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 gradient-hover focus:outline-none focus:ring-4 focus:ring-indigo-200 text-lg"
-                >
-                    Break Down Word
-                </button>
-            </div>
-            
-            <!-- Loading Spinner -->
-            <div id="loadingSpinner" class="hidden text-center py-8">
-                <div class="inline-block w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full spinning"></div>
-                <p class="text-gray-600 mt-2">Analyzing word...</p>
-            </div>
-            
-            <!-- Message Box -->
-            <div id="messageBox" class="hidden p-4 rounded-lg mb-6">
-                <p id="messageText" class="font-medium"></p>
-            </div>
-        </div>
-        
-        <!-- Result Display -->
-        <div id="resultDisplay" class="hidden bg-white rounded-2xl shadow-xl p-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-3">
-                Word Breakdown:
-            </h2>
-            
-            <div class="space-y-4">
-                <div class="bg-gray-50 p-4 rounded-lg">
-                    <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">Original Word:</p>
-                    <span id="originalWord" class="text-xl font-bold text-indigo-600"></span>
-                </div>
+                <!-- Navigation -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#home-section" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-200">
+                        Home
+                    </a>
+                    <a href="#popular-words" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-200">
+                        Popular Words
+                    </a>
+                    <a href="#about" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-200">
+                        About
+                    </a>
+                </nav>
                 
-                <div class="grid md:grid-cols-3 gap-4">
-                    <div class="bg-green-50 p-4 rounded-lg border border-green-200">
-                        <p class="text-sm font-semibold text-green-700 uppercase tracking-wide mb-2">Prefix:</p>
-                        <div class="space-y-1">
-                            <p class="font-bold text-green-800" id="prefix"></p>
-                            <p class="text-sm text-green-600" id="prefixMeaning"></p>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                        <p class="text-sm font-semibold text-blue-700 uppercase tracking-wide mb-2">Root:</p>
-                        <div class="space-y-1">
-                            <p class="font-bold text-blue-800" id="root"></p>
-                            <p class="text-sm text-blue-600" id="rootMeaning"></p>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
-                        <p class="text-sm font-semibold text-purple-700 uppercase tracking-wide mb-2">Suffix:</p>
-                        <div class="space-y-1">
-                            <p class="font-bold text-purple-800" id="suffix"></p>
-                            <p class="text-sm text-purple-600" id="suffixMeaning"></p>
-                        </div>
-                    </div>
+                <!-- Mobile Navigation -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-gray-700 hover:text-indigo-600 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
                 </div>
-                
-                <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
-                    <p class="text-sm font-semibold text-indigo-700 uppercase tracking-wide mb-2">Combined Meaning:</p>
-                    <p class="text-lg text-indigo-800 leading-relaxed" id="combinedMeaning"></p>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 border-t border-gray-200">
+                <div class="flex flex-col space-y-3 pt-4">
+                    <a href="#home-section" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-200">
+                        Home
+                    </a>
+                    <a href="#popular-words" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-200">
+                        Popular Words
+                    </a>
+                    <a href="#about" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-200">
+                        About
+                    </a>
                 </div>
             </div>
         </div>
+    </header>
 
-        <!-- Popular Terms Section -->
+    <!-- Main Content -->
+    <div class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Home Section - Main Word Breaker -->
+        <section id="home-section">
+            <!-- Main Container -->
+            <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+                <!-- Title -->
+                <h2 class="text-4xl font-bold text-center text-gray-800 mb-4">
+                    Biology Word Breaker
+                </h2>
+                
+                <!-- Description -->
+                <p class="text-lg text-gray-600 text-center mb-8 leading-relaxed">
+                    Enter a biology term to break it down into its prefix, root, and suffix components. 
+                    Discover the meaning behind complex scientific vocabulary with AI-powered analysis.
+                </p>
+                
+                <!-- Input Section -->
+                <div class="space-y-4 mb-8">
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            id="biologyWordInput" 
+                            placeholder="e.g., Photosynthesis"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 text-lg"
+                        >
+                    </div>
+                    
+                    <button 
+                        id="breakWordButton"
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 gradient-hover focus:outline-none focus:ring-4 focus:ring-indigo-200 text-lg"
+                    >
+                        Break Down Word
+                    </button>
+                </div>
+                
+                <!-- Loading Spinner -->
+                <div id="loadingSpinner" class="hidden text-center py-8">
+                    <div class="inline-block w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full spinning"></div>
+                    <p class="text-gray-600 mt-2">Analyzing word...</p>
+                </div>
+                
+                <!-- Message Box -->
+                <div id="messageBox" class="hidden p-4 rounded-lg mb-6">
+                    <p id="messageText" class="font-medium"></p>
+                </div>
+            </div>
+            
+            <!-- Result Display -->
+            <div id="resultDisplay" class="hidden bg-white rounded-2xl shadow-xl p-8">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-3">
+                    Word Breakdown:
+                </h3>
+                
+                <div class="space-y-4">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">Original Word:</p>
+                        <span id="originalWord" class="text-xl font-bold text-indigo-600"></span>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                            <p class="text-sm font-semibold text-green-700 uppercase tracking-wide mb-2">Prefix:</p>
+                            <div class="space-y-1">
+                                <p class="font-bold text-green-800" id="prefix"></p>
+                                <p class="text-sm text-green-600" id="prefixMeaning"></p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <p class="text-sm font-semibold text-blue-700 uppercase tracking-wide mb-2">Root:</p>
+                            <div class="space-y-1">
+                                <p class="font-bold text-blue-800" id="root"></p>
+                                <p class="text-sm text-blue-600" id="rootMeaning"></p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                            <p class="text-sm font-semibold text-purple-700 uppercase tracking-wide mb-2">Suffix:</p>
+                            <div class="space-y-1">
+                                <p class="font-bold text-purple-800" id="suffix"></p>
+                                <p class="text-sm text-purple-600" id="suffixMeaning"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
+                        <p class="text-sm font-semibold text-indigo-700 uppercase tracking-wide mb-2">Combined Meaning:</p>
+                        <p class="text-lg text-indigo-800 leading-relaxed" id="combinedMeaning"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Popular Words Section -->
+        <section id="popular-words" class="bg-white rounded-2xl shadow-xl p-8 mt-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-3">
+                Popular Biology Words
+            </h2>
+            <p class="text-gray-600 mb-6">
+                Click on any word below to instantly analyze its components:
+            </p>
+            <div id="popularWordsList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                <!-- Popular words will be populated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Database Popular Terms Section (existing functionality) -->
         <div id="popularTermsSection" class="hidden bg-white rounded-2xl shadow-xl p-8 mt-8">
             <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-3">
-                Popular Biology Terms
+                Recently Searched Terms
             </h2>
             <div id="popularTermsList" class="grid grid-cols-2 md:grid-cols-3 gap-3">
                 <!-- Popular terms will be loaded here -->
             </div>
         </div>
+
+        <!-- About Section -->
+        <section id="about" class="bg-white rounded-2xl shadow-xl p-8 mt-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-3">
+                About This Website
+            </h2>
+            
+            <div class="text-center mb-8">
+                <p class="text-xl font-semibold text-indigo-600 mb-4 italic">
+                    "Unlocking the Language of Life, One Word at a Time."
+                </p>
+                
+                <p class="text-gray-700 leading-relaxed mb-6">
+                    This Biology Word Breaker uses advanced AI technology to help students, educators, and biology enthusiasts 
+                    understand the etymology and structure of complex biological terms. By breaking down words into their 
+                    prefix, root, and suffix components, we make scientific vocabulary more accessible and memorable.
+                </p>
+                
+                <div class="bg-gray-50 p-6 rounded-lg">
+                    <p class="text-lg font-semibold text-gray-800 mb-4">
+                        Made by Ashok Kumar Awasthi
+                    </p>
+                    
+                    <!-- Social Media Links -->
+                    <div class="flex justify-center space-x-6">
+                        <a href="https://github.com/yourusername" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                            <span>GitHub</span>
+                        </a>
+                        
+                        <a href="https://linkedin.com/in/yourprofile" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors duration-200">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                            <span>LinkedIn</span>
+                        </a>
+                        
+                        <a href="https://twitter.com/yourhandle" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="flex items-center space-x-2 text-gray-600 hover:text-blue-400 transition-colors duration-200">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                            </svg>
+                            <span>Twitter</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 
     <script type="module">
+        // Predefined popular biology words
+        const popularBiologyWords = [
+            "Photosynthesis", "Mitochondria", "Cytoplasm", "Enzyme", 
+            "Genetics", "Ecology", "Evolution", "Homeostasis", 
+            "Respiration", "Nucleus", "Chromosome", "Metabolism",
+            "Osmosis", "Biodiversity", "Symbiosis"
+        ];
+
         // Get DOM Elements
         const biologyWordInput = document.getElementById('biologyWordInput');
         const breakWordButton = document.getElementById('breakWordButton');
@@ -154,6 +289,51 @@
         const suffixElement = document.getElementById('suffix');
         const suffixMeaningElement = document.getElementById('suffixMeaning');
         const combinedMeaningElement = document.getElementById('combinedMeaning');
+
+        // Mobile menu functionality
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when clicking on a link
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Populate popular words
+        function populatePopularWords() {
+            const popularWordsList = document.getElementById('popularWordsList');
+            popularWordsList.innerHTML = popularBiologyWords.map(word => `
+                <button 
+                    class="bg-gradient-to-r from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 
+                           border border-indigo-200 rounded-lg p-3 text-center transition-all duration-200 
+                           hover:shadow-md cursor-pointer group hover:scale-105"
+                    onclick="searchPopularWord('${word}')"
+                >
+                    <div class="font-semibold text-gray-800 group-hover:text-indigo-600">${word}</div>
+                </button>
+            `).join('');
+        }
+
+        // Search for a popular word
+        function searchPopularWord(word) {
+            biologyWordInput.value = word;
+            // Scroll to home section
+            document.getElementById('home-section').scrollIntoView({ behavior: 'smooth' });
+            // Small delay to ensure scroll completes before analysis
+            setTimeout(() => {
+                getWordBreakdown(word);
+            }, 500);
+        }
+
+        // Make searchPopularWord available globally
+        window.searchPopularWord = searchPopularWord;
 
         // Message handling functions
         function showMessage(message, type) {
@@ -418,14 +598,18 @@ If a prefix, root, or suffix is not applicable or found, set its "part" and "mea
             popularTermsSection.classList.remove('hidden');
         }
 
-        // Search for a specific term (used by popular terms buttons)
+        // Search for a specific term (used by database popular terms buttons)
         function searchTerm(term) {
             biologyWordInput.value = term;
             getWordBreakdown(term);
         }
 
-        // Load popular terms when page loads
+        // Make searchTerm available globally
+        window.searchTerm = searchTerm;
+
+        // Initialize popular words on page load
         window.addEventListener('load', () => {
+            populatePopularWords();
             loadPopularTerms();
         });
 
