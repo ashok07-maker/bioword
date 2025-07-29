@@ -14,6 +14,13 @@ const pool = new Pool({
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 2000,
 });
+// route for site map xml file 
+const path = require('path');
+
+app.get('/sitemap.xml', (req, res) => {
+res.type('application/xml');
+res.sendFile(path.join(__dirname, 'sitemap.xml'));
+});
 
 // MIME types for different file extensions
 const mimeTypes = {
