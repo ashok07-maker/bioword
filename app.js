@@ -27,6 +27,12 @@ const mimeTypes = {
     '.svg': 'image/svg+xml',
     '.ico': 'image/x-icon'
 };
+// to verify google search console 
+app.get('/google5299d52fa4003f58.html', (req, res) => {
+res.send('google-site-verification: google5299d52fa4003f58.html');
+});
+
+
 
 // Helper function to get client IP
 function getClientIP(req) {
