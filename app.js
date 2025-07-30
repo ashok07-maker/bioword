@@ -16,6 +16,8 @@ const pool = new Pool({
 });
 // route for site map xml file 
 const path = require('path');
+const express = require('express');
+const app = express();
 
 app.get('/sitemap.xml', (req, res) => {
 res.type('application/xml');
