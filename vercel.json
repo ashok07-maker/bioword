@@ -1,13 +1,12 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "api/*.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "index.html",
-      "use": "@vercel/static"
-    }
-  ]
+"version": 2,
+"builds": [
+{ "src": "api/*.js", "use": "@vercel/node" },
+{ "src": "index.html", "use": "@vercel/static" },
+{ "src": "public/sitemap.xml", "use": "@vercel/static" }
+],
+"routes": [
+{ "src": "/sitemap.xml", "dest": "public/sitemap.xml" },
+{ "src": "/", "dest": "index.html" }
+]
 }
