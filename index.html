@@ -336,6 +336,49 @@
             `).join('');
         }
 
+        // auto search biology words 
+        const input = document.getElementById("biologyWordInput");
+const suggestionsBox = document.getElementById("suggestions");
+
+input.addEventListener("input", async () => {
+  const query = input.value.trim();
+  if (query.length < 2) {
+    suggestionsBox.innerHTML = "";
+    suggestionsBox.classList.add("hidden");
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/suggest?q=${encodeURIComponent(query)}`);
+    const suggestions = await res.json();
+
+    if (suggestions.length) {
+      suggestionsBox.innerHTML = suggestions
+        .map(
+          (word) =>
+            `<li class="px-4 py-2 hover:bg-indigo-100 cursor-pointer">${word}</li>`
+        )
+        .join("");
+      suggestionsBox.classList.remove("hidden");
+
+      // Click handler
+      suggestionsBox.querySelectorAll("li").forEach((item) =>
+        item.addEventListener("click", () => {
+          input.value = item.textContent;
+          suggestionsBox.innerHTML = "";
+          suggestionsBox.classList.add("hidden");
+        })
+      );
+    } else {
+      suggestionsBox.innerHTML = "";
+      suggestionsBox.classList.add("hidden");
+    }
+  } catch (err) {
+    console.error("Autocomplete error:", err);
+    suggestionsBox.classList.add("hidden");
+  }
+});
+
         // Search for a popular word
         function searchPopularWord(word) {
             biologyWordInput.value = word;
