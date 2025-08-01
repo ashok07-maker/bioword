@@ -1,7 +1,7 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/*.js", "use": "@vercel/node" },
+    { "src": "api/index.js", "use": "@vercel/node" },
     { "src": "index.html", "use": "@vercel/static" },
     { "src": "public/sitemap.xml", "use": "@vercel/static" },
     { "src": "public/robots.txt", "use": "@vercel/static" }
@@ -9,7 +9,7 @@
   "routes": [
     { "src": "/sitemap.xml", "dest": "public/sitemap.xml" },
     { "src": "/robots.txt", "dest": "public/robots.txt" },
-     { "src": "/api/suggest", "dest": "api/suggest.js" },
+     { "src": "/api/(.*)" , "dest": "/api/index.js",
     { "src": "/", "dest": "index.html" }
   ]
 }
