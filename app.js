@@ -86,6 +86,8 @@ const server = http.createServer(async (req, res) => {
         req.on('end', async () => {
             try {
                 const data = JSON.parse(body);
+                console.log('Incoming data:', data);
+
                 const { 
                     originalWord, 
                     prefix, 
