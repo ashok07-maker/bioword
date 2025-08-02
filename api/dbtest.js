@@ -1,15 +1,41 @@
-const { Pool } = require('pg');
+import { Pool } from 'pg';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  ssl: {
+    rejectUnauthorized: false
+  },
 });
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  
   try {
-    await pool.query('SELECT 1');
-    res.status(200).send('Database connected!');
+    console.log('Testing database connection...');
+    console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL);
+    
+    const result = await pool.query('SELECT NOW() as current_time');
+    console.log('Database query successful:', result.rows[0]);
+    
+    // Test if tables exist
+    const tableCheck = await pool.query(`
+      SELECT table_name 
+      FROM information_schema.tables 
+      WHERE table_schema = 'public' 
+      AND table_name IN ('word_breakdowns', 'search_history', 'popular_terms')
+    `);
+    
+    res.status(200).json({
+      status: 'Database connected!',
+      timestamp: result.rows[0].current_time,
+      tablesFound: tableCheck.rows.map(row => row.table_name)
+    });
   } catch (err) {
-    res.status(500).send('Database not connected: ' + err.message);
+    console.error('Database connection error:', err);
+    res.status(500).json({
+      status: 'Database not connected',
+      error: err.message,
+      code: err.code
+    });
   }
-};
+}

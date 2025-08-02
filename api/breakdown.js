@@ -2,7 +2,9 @@ import { Pool } from 'pg';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  ssl: {
+    rejectUnauthorized: false
+  },
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
@@ -17,6 +19,7 @@ function getClientIP(req) {
 }
 
 export default async function handler(req, res) {
+  // Add CORS headers first
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -31,6 +34,10 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Log for debugging
+    console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL);
+    console.log('Request body:', req.body);
+    
     const data = req.body;
     const {
       originalWord, prefix, prefixMeaning, root, rootMeaning,
@@ -41,6 +48,9 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
+    // Test database connection first
+    await pool.query('SELECT 1');
+    
     const result = await pool.query(`
       INSERT INTO word_breakdowns 
       (original_word, prefix, prefix_meaning, root, root_meaning, suffix, suffix_meaning, combined_meaning, raw_response, created_at, updated_at)
@@ -66,6 +76,8 @@ export default async function handler(req, res) {
     res.status(200).json({ success: true, id: result.rows[0].id });
   } catch (error) {
     console.error('Database error:', error);
+    console.error('Error details:', error.message);
+    console.error('Error code:', error.code);
     res.status(500).json({ success: false, error: error.message });
   }
 }

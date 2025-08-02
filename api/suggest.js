@@ -1,4 +1,4 @@
-const { Pool } = require('pg');
+import { Pool } from 'pg';
 
 // Initialize PostgreSQL connection
 const pool = new Pool({
@@ -8,7 +8,17 @@ const pool = new Pool({
   }
 });
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
+  // Add CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
   const query = req.query.q || '';
 
   if (!query || query.length < 2) {
@@ -28,4 +38,4 @@ module.exports = async (req, res) => {
     console.error('Error fetching suggestions:', err);
     res.status(500).json([]);
   }
-};
+}
