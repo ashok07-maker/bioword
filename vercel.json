@@ -12,7 +12,7 @@
 
     { "src": "/api/breakdown", "dest": "api/breakdown.js" },
     { "src": "/api/key", "dest": "api/key.js" },
-    { "src": "/api/popular", "dest": "api/popular.js" },
+    
     { "src": "/api/suggest", "dest": "api/suggest.js" },
     { "src": "/api/debug", "dest": "api/debug.js" },
     { "src": "/api/dbtest", "dest": "api/dbtest.js" },
