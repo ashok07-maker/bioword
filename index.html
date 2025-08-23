@@ -450,6 +450,19 @@ input.addEventListener("input", async () => {
                 showMessage('Please enter a biology word to analyze.', 'error');
                 return;
             }
+
+            // ---- Debounce helper ----
+function debounce(func, delay) {
+  let timeoutId;
+  return function (...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func.apply(this, args), delay);
+  };
+}
+
+// ---- Debounced wrapper of your existing getWordBreakdown ----
+const debouncedGetWordBreakdown = debounce(getWordBreakdown, 800);
+
             // --- Cache Wrapper ---
 async function cachedGetWordBreakdown(word) {
   if (wordCache[word]) {
