@@ -279,6 +279,33 @@
     </div>
 
     <script type="module">
+
+        // --- Persistent Cache using localStorage ---
+let wordCache = {};
+
+const savedCache = localStorage.getItem('bioWordCache');
+if (savedCache) {
+  try {
+    wordCache = JSON.parse(savedCache);
+    console.log("📦 Loaded cache from localStorage:", wordCache);
+  } catch (e) {
+    console.error("❌ Failed to parse cache from localStorage", e);
+    wordCache = {};
+  }
+}
+
+
+        // --- Debounce Helper Function ---
+function debounce(func, delay) {
+  let timeoutId;
+  return function (...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+}
+
         // Predefined popular biology words
         const popularBiologyWords = [
             "Photosynthesis", "Mitochondria", "Cytoplasm", "Enzyme", 
@@ -386,7 +413,7 @@ input.addEventListener("input", async () => {
             document.getElementById('home-section').scrollIntoView({ behavior: 'smooth' });
             // Small delay to ensure scroll completes before analysis
             setTimeout(() => {
-                getWordBreakdown(word);
+                debouncedGetWordBreakdown(word);
             }, 500);
         }
 
@@ -423,6 +450,28 @@ input.addEventListener("input", async () => {
                 showMessage('Please enter a biology word to analyze.', 'error');
                 return;
             }
+            // --- Cache Wrapper ---
+async function cachedGetWordBreakdown(word) {
+  if (wordCache[word]) {
+    console.log("⚡ Using cached result for:", word);
+    displayResult(wordCache[word], word); // your existing UI function
+    return;
+  }
+
+  const result = await getWordBreakdown(word);
+
+  if (result) {
+    wordCache[word] = result;
+
+    // Save updated cache to localStorage
+    localStorage.setItem('bioWordCache', JSON.stringify(wordCache));
+  }
+}
+
+
+            // Debounced version of cached API call
+const debouncedGetWordBreakdown = debounce(cachedGetWordBreakdown, 800);
+
 
             // Show loading state
             loadingSpinner.classList.remove('hidden');
@@ -659,7 +708,7 @@ If a prefix, root, or suffix is not applicable or found, set its "part" and "mea
         // Search for a specific term (used by database popular terms buttons)
         function searchTerm(term) {
             biologyWordInput.value = term;
-            getWordBreakdown(term);
+            debouncedGetWordBreakdown(term);
         }
 
         // Make searchTerm available globally
@@ -674,14 +723,14 @@ If a prefix, root, or suffix is not applicable or found, set its "part" and "mea
         // Event Listeners
         breakWordButton.addEventListener('click', () => {
             const word = biologyWordInput.value.trim();
-            getWordBreakdown(word);
+             debouncedGetWordBreakdown(word);
         });
 
         // Enter key listener for input field
         biologyWordInput.addEventListener('keypress', (event) => {
             if (event.key === 'Enter') {
                 const word = biologyWordInput.value.trim();
-                getWordBreakdown(word);
+                 debouncedGetWordBreakdown(word);
             }
         });
 
