@@ -1,5 +1,290 @@
-<!DOCTYPE html> <html lang="en" style="scroll-behavior: smooth;"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <meta name="google-site-verification" content="RgJolnd9pDJfEgqMjZc8Q9UQjqPAF3CHYsgofouqaMc" /> <title>Bio Word Breaker | Break Down Biology Terms with AI</title> <meta name="description" content="Use Bio Word Breaker to break complex biology words into prefix, root, and suffix parts with AI-powered meanings. Perfect for students and exam prep."> <meta name="keywords" content="biology word breaker, biology terms, biology prefix root suffix, bio app, ai biology learning"> <meta name="author" content="Ashok Kumar Awasthi"> <!-- json ld code for recognizing website in browser --> <script type="application/ld+json"> { "@context": "https://schema.org", "@type": "WebApplication", "name": "Bio Word Breaker", "url": "https://bioword.vercel.app", "description": "Bio Word Breaker is a free AI-powered tool that breaks complex biology terms into prefix, root, and suffix with meanings. Perfect for students and science learners.", "applicationCategory": "EducationalApplication", "operatingSystem": "All", "browserRequirements": "Requires JavaScript. Works on all modern browsers.", "creator": { "@type": "Person", "name": "Ashok Kumar Awasthi" } } </script> </script> <!-- Tailwind CSS CDN --> <script src="https://cdn.tailwindcss.com"></script> <!-- Google Fonts - Inter --> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"> <style> body { font-family: 'Inter', sans-serif; padding-top: 80px; /* Account for fixed header */ } /* Custom spinning animation for loading spinner */ @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } .spinning { animation: spin 1s linear infinite; } /* Custom gradient for button hover effect */ .gradient-hover:hover { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); } </style> </head> <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen"> <!-- Fixed Header --> <header class="fixed top-0 left-0 right-0 bg-white shadow-lg z-50"> <div class="max-w-6xl mx-auto px-4 py-4"> <div class="flex items-center justify-between"> <!-- Logo/Title --> <div class="flex items-center"> <h1 class="text-2xl md:text-3xl font-bold text-indigo-600"> BioWord Breaker </h1> </div> <!-- Navigation --> <nav class="hidden md:flex space-x-8"> <a href="#home-section" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-200"> Home </a> <a href="#popular-words" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-200"> Popular Words </a> <a href="#about" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-200"> About </a> </nav> <!-- Mobile Navigation --> <div class="md:hidden"> <button id="mobile-menu-button" class="text-gray-700 hover:text-indigo-600 focus:outline-none"> <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path> </svg> </button> </div> </div> <!-- Mobile Menu --> <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 border-t border-gray-200"> <div class="flex flex-col space-y-3 pt-4"> <a href="#home-section" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-200"> Home </a> <a href="#popular-words" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-200"> Popular Words </a> <a href="#about" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-200"> About </a> </div> </div> </div> </header> <!-- Main Content --> <div class="max-w-2xl mx-auto px-4 py-8"> <!-- Home Section - Main Word Breaker --> <section id="home-section"> <!-- Main Container --> <div class="bg-white rounded-2xl shadow-xl p-8 mb-8"> <!-- Title --> <h2 class="text-4xl font-bold text-center text-gray-800 mb-4"> Biology Word Breaker </h2> <!-- Description --> <p class="text-lg text-gray-600 text-center mb-8 leading-relaxed"> Enter a biology term to break it down into its prefix, root, and suffix components. Discover the meaning behind complex scientific vocabulary with AI-powered analysis. </p> <!-- Input Section --> <div class="space-y-4 mb-8"> <div class="relative"> <input type="text" id="biologyWordInput" placeholder="e.g., Photosynthesis" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 text-lg" autocomplete="off" /> <ul id="suggestions" class="absolute w-full bg-white border border-gray-300 rounded-lg shadow-md mt-1 hidden z-10 max-h-60 overflow-y-auto text-left"></ul> </div> <button id="breakWordButton" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 gradient-hover focus:outline-none focus:ring-4 focus:ring-indigo-200 text-lg" > Break Down Word </button> </div> <!-- Loading Spinner --> <div id="loadingSpinner" class="hidden text-center py-8"> <div class="inline-block w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full spinning"></div> <p class="text-gray-600 mt-2">Analyzing word...</p> </div> <!-- Message Box --> <div id="messageBox" class="hidden p-4 rounded-lg mb-6"> <p id="messageText" class="font-medium"></p> </div> </div> <!-- Result Display --> <div id="resultDisplay" class="hidden bg-white rounded-2xl shadow-xl p-8"> <h3 class="text-2xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-3"> Word Breakdown: </h3> <div class="space-y-4"> <div class="bg-gray-50 p-4 rounded-lg"> <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">Original Word:</p> <span id="originalWord" class="text-xl font-bold text-indigo-600"></span> </div> <div class="grid md:grid-cols-3 gap-4"> <div class="bg-green-50 p-4 rounded-lg border border-green-200"> <p class="text-sm font-semibold text-green-700 uppercase tracking-wide mb-2">Prefix:</p> <div class="space-y-1"> <p class="font-bold text-green-800" id="prefix"></p> <p class="text-sm text-green-600" id="prefixMeaning"></p> </div> </div> <div class="bg-blue-50 p-4 rounded-lg border border-blue-200"> <p class="text-sm font-semibold text-blue-700 uppercase tracking-wide mb-2">Root:</p> <div class="space-y-1"> <p class="font-bold text-blue-800" id="root"></p> <p class="text-sm text-blue-600" id="rootMeaning"></p> </div> </div> <div class="bg-purple-50 p-4 rounded-lg border border-purple-200"> <p class="text-sm font-semibold text-purple-700 uppercase tracking-wide mb-2">Suffix:</p> <div class="space-y-1"> <p class="font-bold text-purple-800" id="suffix"></p> <p class="text-sm text-purple-600" id="suffixMeaning"></p> </div> </div> </div> <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200"> <p class="text-sm font-semibold text-indigo-700 uppercase tracking-wide mb-2">Combined Meaning:</p> <p class="text-lg text-indigo-800 leading-relaxed" id="combinedMeaning"></p> </div> </div> </div> </section> <!-- Popular Words Section --> <section id="popular-words" class="bg-white rounded-2xl shadow-xl p-8 mt-8"> <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-3"> Popular Biology Words </h2> <p class="text-gray-600 mb-6"> Click on any word below to instantly analyze its components: </p> <div id="popularWordsList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"> <!-- Popular words will be populated by JavaScript --> </div> </section> <!-- Database Popular Terms Section (existing functionality) --> <div id="popularTermsSection" class="hidden bg-white rounded-2xl shadow-xl p-8 mt-8"> <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-3"> Recently Searched Terms </h2> <div id="popularTermsList" class="grid grid-cols-2 md:grid-cols-3 gap-3"> <!-- Popular terms will be loaded here --> </div> </div> <!-- About Section --> <section id="about" class="bg-white rounded-2xl shadow-xl p-8 mt-8"> <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-3"> About This Website </h2> <div class="text-center mb-8"> <p class="text-xl font-semibold text-indigo-600 mb-4 italic"> “Where Biology Words Make Sense.” </p> <p class="text-gray-700 leading-relaxed mb-6"> Bio Word Breaker is a free, AI-powered tool that helps students easily understand complex biology terms by breaking them down into their prefix, root, and suffix — along with clear meanings. Whether you're preparing for exams or just curious about biological language, our tool makes learning faster and smarter. Powered by Google Gemini AI and built for students, this app is designed to make biology easier for everyone. Start learning biology the smart way — one word at a time. </p> <div class="bg-gray-50 p-6 rounded-lg"> <p class="text-lg font-semibold text-gray-800 mb-4"> Made by Ashok Kumar Awasthi </p> <!-- Social Media Links --> <div class="flex justify-center space-x-6"> <a href="https://www.facebook.com/profile.php?id=100072274727462" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"> <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"> <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/> </svg> <span>Facebook</span> </a> <a href="https://www.youtube.com/@TechnicalAshok12" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 text-gray-600 hover:text-red-600 transition-colors duration-200"> <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"> <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/> </svg> <span>YouTube</span> </a> <a href="https://www.instagram.com/ashokawasthi07/" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 text-gray-600 hover:text-pink-600 transition-colors duration-200"> <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"> <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/> </svg> <span>Instagram</span> </a> </div> </div> </div> </section> </div> <script type="module"> // Predefined popular biology words const popularBiologyWords = [ "Photosynthesis", "Mitochondria", "Cytoplasm", "Enzyme", "Genetics", "Ecology", "Evolution", "Homeostasis", "Respiration", "Nucleus", "Chromosome", "Metabolism", "Osmosis", "Biodiversity", "Symbiosis" ]; // Get DOM Elements const biologyWordInput = document.getElementById('biologyWordInput'); const breakWordButton = document.getElementById('breakWordButton'); const loadingSpinner = document.getElementById('loadingSpinner'); const messageBox = document.getElementById('messageBox'); const messageText = document.getElementById('messageText'); const resultDisplay = document.getElementById('resultDisplay'); // Result elements const originalWordElement = document.getElementById('originalWord'); const prefixElement = document.getElementById('prefix'); const prefixMeaningElement = document.getElementById('prefixMeaning'); const rootElement = document.getElementById('root'); const rootMeaningElement = document.getElementById('rootMeaning'); const suffixElement = document.getElementById('suffix'); const suffixMeaningElement = document.getElementById('suffixMeaning'); const combinedMeaningElement = document.getElementById('combinedMeaning'); // Mobile menu functionality const mobileMenuButton = document.getElementById('mobile-menu-button'); const mobileMenu = document.getElementById('mobile-menu'); mobileMenuButton.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); }); // Close mobile menu when clicking on a link const mobileMenuLinks = mobileMenu.querySelectorAll('a'); mobileMenuLinks.forEach(link => { link.addEventListener('click', () => { mobileMenu.classList.add('hidden'); }); }); // Populate popular words function populatePopularWords() { const popularWordsList = document.getElementById('popularWordsList'); popularWordsList.innerHTML = popularBiologyWords.map(word => <button class="bg-gradient-to-r from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 border border-indigo-200 rounded-lg p-3 text-center transition-all duration-200 hover:shadow-md cursor-pointer group hover:scale-105" onclick="searchPopularWord('${word}')" > <div class="font-semibold text-gray-800 group-hover:text-indigo-600">${word}</div> </button> ).join(''); } // auto search biology words const input = document.getElementById("biologyWordInput"); const suggestionsBox = document.getElementById("suggestions"); input.addEventListener("input", async () => { const query = input.value.trim(); if (query.length < 2) { suggestionsBox.innerHTML = ""; suggestionsBox.classList.add("hidden"); return; } try { const res = await fetch(/api/suggest?q=${encodeURIComponent(query)}); const suggestions = await res.json(); if (suggestions.length) { suggestionsBox.innerHTML = suggestions .map( (word) => <li class="px-4 py-2 hover:bg-indigo-100 cursor-pointer">${word}</li> ) .join(""); suggestionsBox.classList.remove("hidden"); // Click handler suggestionsBox.querySelectorAll("li").forEach((item) => item.addEventListener("click", () => { input.value = item.textContent; suggestionsBox.innerHTML = ""; suggestionsBox.classList.add("hidden"); }) ); } else { suggestionsBox.innerHTML = ""; suggestionsBox.classList.add("hidden"); } } catch (err) { console.error("Autocomplete error:", err); suggestionsBox.classList.add("hidden"); } }); // Search for a popular word function searchPopularWord(word) { biologyWordInput.value = word; // Scroll to home section document.getElementById('home-section').scrollIntoView({ behavior: 'smooth' }); // Small delay to ensure scroll completes before analysis setTimeout(() => { getWordBreakdown(word); }, 500); } // Make searchPopularWord available globally window.searchPopularWord = searchPopularWord; // Message handling functions function showMessage(message, type) { messageText.textContent = message; messageBox.classList.remove('hidden'); // Remove existing type classes messageBox.classList.remove('bg-red-100', 'border-red-400', 'text-red-700'); messageBox.classList.remove('bg-green-100', 'border-green-400', 'text-green-700'); messageBox.classList.remove('bg-yellow-100', 'border-yellow-400', 'text-yellow-700'); // Add appropriate classes based on type if (type === 'error') { messageBox.classList.add('bg-red-100', 'border-red-400', 'text-red-700', 'border'); } else if (type === 'success') { messageBox.classList.add('bg-green-100', 'border-green-400', 'text-green-700', 'border'); } else { messageBox.classList.add('bg-yellow-100', 'border-yellow-400', 'text-yellow-700', 'border'); } } function hideMessage() { messageBox.classList.add('hidden'); } // Main word breakdown function async function getWordBreakdown(word) { if (!word.trim()) { showMessage('Please enter a biology word to analyze.', 'error'); return; } // Show loading state loadingSpinner.classList.remove('hidden'); breakWordButton.disabled = true; breakWordButton.classList.add('opacity-50', 'cursor-not-allowed'); hideMessage(); resultDisplay.classList.add('hidden'); try { // Get API key from server-side endpoint let apiKey = "AIzaSyArV5jXHuvpUaJy865wxkraAx65ENKqOTY"; try { const keyResponse = await fetch('/api/key'); if (keyResponse.ok) { apiKey = await keyResponse.text(); } } catch (e) { console.log('Using fallback API key access method'); } if (!apiKey) { throw new Error('API key not configured. Please ensure the Gemini API key is properly set.'); } // Construct the prompt for Gemini API const prompt = Provide a JSON object for the biology word "${word}". Strictly adhere to the following JSON schema. Do NOT include any additional conversational text, markdown formatting (like \\\json), or explanations outside the JSON object. For 'meaning' fields, provide only the concise, core definition. Do NOT include examples, etymology, or source URLs. { "originalWord": "word", "prefix": {"part": "prefix_value", "meaning": "prefix_meaning"}, "root": {"part": "root_value", "meaning": "root_meaning"}, "suffix": {"part": "suffix_value", "meaning": "suffix_meaning"}, "combinedMeaning": "combined_meaning_of_the_word" } If a prefix, root, or suffix is not applicable or found, set its "part" and "meaning" to "N/A".; // API Call Payload const payload = { contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json", responseSchema: { type: "object", properties: { originalWord: { type: "string" }, prefix: { type: "object", properties: { part: { type: "string" }, meaning: { type: "string" } }, required: ["part", "meaning"] }, root: { type: "object", properties: { part: { type: "string" }, meaning: { type: "string" } }, required: ["part", "meaning"] }, suffix: { type: "object", properties: { part: { type: "string" }, meaning: { type: "string" } }, required: ["part", "meaning"] }, combinedMeaning: { type: "string" } }, required: ["originalWord", "prefix", "root", "suffix", "combinedMeaning"] } } }; // Make API request const response = await fetch(https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}, { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify(payload) }); if (!response.ok) { const errorData = await response.json().catch(() => ({})); throw new Error(API request failed: ${response.status} - ${errorData.error?.message || response.statusText}); } const data = await response.json(); if (!data.candidates || data.candidates.length === 0) { throw new Error('No response generated from the API.'); } let jsonString = data.candidates[0].content.parts[0].text; // Robust JSON parsing with preprocessing try { // Remove any leading/trailing markdown code block fences jsonString = jsonString.replace(/^
-json\s*/, '').replace(/\s*
-$/, ''); jsonString = jsonString.replace(/^
-\s*/, '').replace(/\s*
-$/, ''); // Extract content between first { and last } const firstBrace = jsonString.indexOf('{'); const lastBrace = jsonString.lastIndexOf('}'); if (firstBrace !== -1 && lastBrace !== -1 && firstBrace < lastBrace) { jsonString = jsonString.substring(firstBrace, lastBrace + 1); } // Parse the JSON const breakdown = JSON.parse(jsonString); // Display results displayResults(breakdown); // Save to database await saveBreakdownToDatabase(breakdown, data); showMessage('Word breakdown completed successfully!', 'success'); } catch (parseError) { console.error('JSON parsing error:', parseError); console.error('Raw response:', jsonString); throw new Error('Failed to parse the API response. Please try again.'); } } catch (error) { console.error('Error:', error); showMessage(error.message || 'An error occurred while analyzing the word. Please try again.', 'error'); } finally { // Cleanup - hide loading and re-enable button loadingSpinner.classList.add('hidden'); breakWordButton.disabled = false; breakWordButton.classList.remove('opacity-50', 'cursor-not-allowed'); } } // Save breakdown to database async function saveBreakdownToDatabase(breakdown, rawResponse) { try { const response = await fetch('/api/breakdown', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ originalWord: breakdown.originalWord, prefix: breakdown.prefix?.part || 'N/A', prefixMeaning: breakdown.prefix?.meaning || 'N/A', root: breakdown.root?.part || 'N/A', rootMeaning: breakdown.root?.meaning || 'N/A', suffix: breakdown.suffix?.part || 'N/A', suffixMeaning: breakdown.suffix?.meaning || 'N/A', combinedMeaning: breakdown.combinedMeaning || 'N/A', rawResponse: rawResponse }) }); if (!response.ok) { console.error('Failed to save breakdown to database'); } } catch (error) { console.error('Error saving to database:', error); } } // Display the breakdown results function displayResults(breakdown) { originalWordElement.textContent = breakdown.originalWord || 'N/A'; prefixElement.textContent = breakdown.prefix?.part || 'N/A'; prefixMeaningElement.textContent = breakdown.prefix?.meaning || 'N/A'; rootElement.textContent = breakdown.root?.part || 'N/A'; rootMeaningElement.textContent = breakdown.root?.meaning || 'N/A'; suffixElement.textContent = breakdown.suffix?.part || 'N/A'; suffixMeaningElement.textContent = breakdown.suffix?.meaning || 'N/A'; combinedMeaningElement.textContent = breakdown.combinedMeaning || 'N/A'; resultDisplay.classList.remove('hidden'); // Load and display popular terms after showing results loadPopularTerms(); } // Load popular terms from database async function loadPopularTerms() { try { const response = await fetch('/api/popular'); if (response.ok) { const terms = await response.json(); displayPopularTerms(terms); } } catch (error) { console.error('Error loading popular terms:', error); } } // Display popular terms function displayPopularTerms(terms) { const popularTermsList = document.getElementById('popularTermsList'); const popularTermsSection = document.getElementById('popularTermsSection'); if (terms.length === 0) return; popularTermsList.innerHTML = terms.map(term => <button class="bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 border border-blue-200 rounded-lg p-3 text-left transition-all duration-200 hover:shadow-md cursor-pointer group" onclick="searchTerm('${term.term}')" > <div class="font-semibold text-gray-800 group-hover:text-indigo-600 capitalize">${term.term}</div> <div class="text-xs text-gray-500 mt-1">Searched ${term.search_count} times</div> </button> ).join(''); popularTermsSection.classList.remove('hidden'); } // Search for a specific term (used by database popular terms buttons) function searchTerm(term) { biologyWordInput.value = term; getWordBreakdown(term); } // Make searchTerm available globally window.searchTerm = searchTerm; // Initialize popular words on page load window.addEventListener('load', () => { populatePopularWords(); loadPopularTerms(); }); // Event Listeners breakWordButton.addEventListener('click', () => { const word = biologyWordInput.value.trim(); getWordBreakdown(word); }); // Enter key listener for input field biologyWordInput.addEventListener('keypress', (event) => { if (event.key === 'Enter') { const word = biologyWordInput.value.trim(); getWordBreakdown(word); } }); // Focus on input field when page loads biologyWordInput.focus(); </script> </body> </html>
+<!DOCTYPE html>
+<html lang="en" style="scroll-behavior: smooth;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-site-verification" content="RgJolnd9pDJfEgqMjZc8Q9UQjqPAF3CHYsgofouqaMc" />
+  <title>Bio Word Breaker | Break Down Biology Terms with AI</title>
+  <meta name="description" content="Use Bio Word Breaker to break complex biology words into prefix, root, and suffix parts with AI-powered meanings. Perfect for students and exam prep.">
+  <meta name="keywords" content="biology word breaker, biology terms, biology prefix root suffix, bio app, ai biology learning">
+  <meta name="author" content="Ashok Kumar Awasthi">
+
+  <!-- JSON-LD for SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Bio Word Breaker",
+    "url": "https://bioword.vercel.app",
+    "description": "Bio Word Breaker is a free AI-powered tool that breaks complex biology terms into prefix, root, and suffix with meanings. Perfect for students and science learners.",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Works on all modern browsers.",
+    "creator": {
+      "@type": "Person",
+      "name": "Ashok Kumar Awasthi"
+    }
+  }
+  </script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      padding-top: 80px; /* Fixed header offset */
+    }
+
+    /* Loading spinner */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .spinning { animation: spin 1s linear infinite; }
+
+    /* Button hover gradient */
+    .gradient-hover:hover {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+
+  <!-- Header -->
+  <header class="fixed top-0 left-0 right-0 bg-white shadow-lg z-50">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <h1 class="text-2xl md:text-3xl font-bold text-indigo-600">BioWord Breaker</h1>
+      <nav class="hidden md:flex space-x-8">
+        <a href="#home-section" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-200">Home</a>
+        <a href="#popular-words" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-200">Popular Words</a>
+        <a href="#about" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-200">About</a>
+      </nav>
+      <div class="md:hidden">
+        <button id="mobile-menu-button" class="text-gray-700 hover:text-indigo-600 focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 border-t border-gray-200">
+      <div class="flex flex-col space-y-3 pt-4">
+        <a href="#home-section" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-200">Home</a>
+        <a href="#popular-words" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-200">Popular Words</a>
+        <a href="#about" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors duration-200">About</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="max-w-2xl mx-auto px-4 py-8">
+
+    <!-- Home Section -->
+    <section id="home-section">
+      <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+        <h2 class="text-4xl font-bold text-center text-gray-800 mb-4">Biology Word Breaker</h2>
+        <p class="text-lg text-gray-600 text-center mb-8 leading-relaxed">
+          Enter a biology term to break it down into its prefix, root, and suffix components. Discover the meaning behind complex scientific vocabulary with AI-powered analysis.
+        </p>
+
+        <div class="space-y-4 mb-8">
+          <div class="relative">
+            <input type="text" id="biologyWordInput" placeholder="e.g., Photosynthesis"
+                   class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 text-lg" autocomplete="off"/>
+            <ul id="suggestions"
+                class="absolute w-full bg-white border border-gray-300 rounded-lg shadow-md mt-1 hidden z-10 max-h-60 overflow-y-auto text-left">
+            </ul>
+          </div>
+          <button id="breakWordButton"
+                  class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 gradient-hover focus:outline-none focus:ring-4 focus:ring-indigo-200 text-lg">
+            Break Down Word
+          </button>
+        </div>
+
+        <div id="loadingSpinner" class="hidden text-center py-8">
+          <div class="inline-block w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full spinning"></div>
+          <p class="text-gray-600 mt-2">Analyzing word...</p>
+        </div>
+
+        <div id="messageBox" class="hidden p-4 rounded-lg mb-6">
+          <p id="messageText" class="font-medium"></p>
+        </div>
+      </div>
+
+      <!-- Result Display -->
+      <div id="resultDisplay" class="hidden bg-white rounded-2xl shadow-xl p-8">
+        <h3 class="text-2xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-3">Word Breakdown:</h3>
+        <div class="space-y-4">
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">Original Word:</p>
+            <span id="originalWord" class="text-xl font-bold text-indigo-600"></span>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-4">
+            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+              <p class="text-sm font-semibold text-green-700 uppercase tracking-wide mb-2">Prefix:</p>
+              <div class="space-y-1">
+                <p class="font-bold text-green-800" id="prefix"></p>
+                <p class="text-sm text-green-600" id="prefixMeaning"></p>
+              </div>
+            </div>
+
+            <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <p class="text-sm font-semibold text-blue-700 uppercase tracking-wide mb-2">Root:</p>
+              <div class="space-y-1">
+                <p class="font-bold text-blue-800" id="root"></p>
+                <p class="text-sm text-blue-600" id="rootMeaning"></p>
+              </div>
+            </div>
+
+            <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+              <p class="text-sm font-semibold text-purple-700 uppercase tracking-wide mb-2">Suffix:</p>
+              <div class="space-y-1">
+                <p class="font-bold text-purple-800" id="suffix"></p>
+                <p class="text-sm text-purple-600" id="suffixMeaning"></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
+            <p class="text-sm font-semibold text-indigo-700 uppercase tracking-wide mb-2">Combined Meaning:</p>
+            <p class="text-lg text-indigo-800 leading-relaxed" id="combinedMeaning"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Popular Words Section -->
+    <section id="popular-words" class="bg-white rounded-2xl shadow-xl p-8 mt-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-3">Popular Biology Words</h2>
+      <p class="text-gray-600 mb-6">Click on any word below to instantly analyze its components:</p>
+      <div id="popularWordsList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"></div>
+    </section>
+
+    <!-- Recently Searched Terms -->
+    <div id="popularTermsSection" class="hidden bg-white rounded-2xl shadow-xl p-8 mt-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-3">Recently Searched Terms</h2>
+      <div id="popularTermsList" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
+    </div>
+
+    <!-- About Section -->
+    <section id="about" class="bg-white rounded-2xl shadow-xl p-8 mt-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-3">About This Website</h2>
+      <div class="text-center mb-8">
+        <p class="text-xl font-semibold text-indigo-600 mb-4 italic">“Where Biology Words Make Sense.”</p>
+        <p class="text-gray-700 leading-relaxed mb-6">
+          Bio Word Breaker is a free, AI-powered tool that helps students easily understand complex biology terms...
+        </p>
+        <div class="bg-gray-50 p-6 rounded-lg">
+          <p class="text-lg font-semibold text-gray-800 mb-4">Made by Ashok Kumar Awasthi</p>
+          <!-- Social links here -->
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Script -->
+  <script type="module">
+    // DOM elements
+    const biologyWordInput = document.getElementById('biologyWordInput');
+    const breakWordButton = document.getElementById('breakWordButton');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const messageBox = document.getElementById('messageBox');
+    const messageText = document.getElementById('messageText');
+    const resultDisplay = document.getElementById('resultDisplay');
+    const originalWordElement = document.getElementById('originalWord');
+    const prefixElement = document.getElementById('prefix');
+    const prefixMeaningElement = document.getElementById('prefixMeaning');
+    const rootElement = document.getElementById('root');
+    const rootMeaningElement = document.getElementById('rootMeaning');
+    const suffixElement = document.getElementById('suffix');
+    const suffixMeaningElement = document.getElementById('suffixMeaning');
+    const combinedMeaningElement = document.getElementById('combinedMeaning');
+
+    // Mobile menu
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+    });
+
+    // Popular biology words
+    const popularBiologyWords = [
+      "Photosynthesis","Mitochondria","Cytoplasm","Enzyme","Genetics",
+      "Ecology","Evolution","Homeostasis","Respiration","Nucleus",
+      "Chromosome","Metabolism","Osmosis","Biodiversity","Symbiosis"
+    ];
+
+    function populatePopularWords() {
+      const popularWordsList = document.getElementById('popularWordsList');
+      popularWordsList.innerHTML = popularBiologyWords.map(word => 
+        `<button class="bg-gradient-to-r from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 border border-indigo-200 rounded-lg p-3 text-center transition-all duration-200 hover:shadow-md cursor-pointer group hover:scale-105"
+          onclick="searchPopularWord('${word}')">
+          <div class="font-semibold text-gray-800 group-hover:text-indigo-600">${word}</div>
+        </button>`).join('');
+    }
+
+    // Message handling
+    function showMessage(message, type) {
+      messageText.textContent = message;
+      messageBox.classList.remove('hidden','bg-red-100','border-red-400','text-red-700','bg-green-100','border-green-400','text-green-700','bg-yellow-100','border-yellow-400','text-yellow-700');
+      if(type==='error') messageBox.classList.add('bg-red-100','border-red-400','text-red-700','border');
+      else if(type==='success') messageBox.classList.add('bg-green-100','border-green-400','text-green-700','border');
+      else messageBox.classList.add('bg-yellow-100','border-yellow-400','text-yellow-700','border');
+    }
+    function hideMessage(){ messageBox.classList.add('hidden'); }
+
+    // Debounce helper
+    function debounce(func, delay) {
+      let timeoutId;
+      return function(...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func.apply(this,args), delay);
+      }
+    }
+    // const debouncedGetWordBreakdown = debounce(getWordBreakdown, 800); // use if needed
+
+    // Main function (already in your code)
+    async function getWordBreakdown(word) {
+      if(!word.trim()){ showMessage('Please enter a biology word to analyze.','error'); return; }
+      // your existing code for API request, displayResults, saveBreakdownToDatabase
+    }
+
+    // Search popular word
+    function searchPopularWord(word){
+      biologyWordInput.value = word;
+      document.getElementById('home-section').scrollIntoView({behavior:'smooth'});
+      setTimeout(()=>{ getWordBreakdown(word); }, 500);
+    }
+    window.searchPopularWord = searchPopularWord;
+
+    // Search term
+    function searchTerm(term){
+      biologyWordInput.value = term;
+      getWordBreakdown(term);
+    }
+    window.searchTerm = searchTerm;
+
+    // Populate popular words on load
+    window.addEventListener('load', ()=>{ populatePopularWords(); });
+
+    // Event listeners
+    breakWordButton.addEventListener('click', ()=>{ getWordBreakdown(biologyWordInput.value.trim()); });
+    biologyWordInput.addEventListener('keypress', (e)=>{ if(e.key==='Enter') getWordBreakdown(biologyWordInput.value.trim()); });
+
+    // Focus input on page load
+    biologyWordInput.focus();
+  </script>
+
+</body>
+</html>
