@@ -713,7 +713,7 @@ If a prefix, root, or suffix is not applicable or found, set its "part" and "mea
         // Search for a specific term (used by database popular terms buttons)
         function searchTerm(term) {
             biologyWordInput.value = term;
-            debouncedGetWordBreakdown(term);
+             getWordBreakdown(term); 
         }
 
         // Make searchTerm available globally
@@ -728,14 +728,14 @@ If a prefix, root, or suffix is not applicable or found, set its "part" and "mea
         // Event Listeners
         breakWordButton.addEventListener('click', () => {
             const word = biologyWordInput.value.trim();
-             debouncedGetWordBreakdown(word);
+  getWordBreakdown(word); 
         });
 
         // Enter key listener for input field
         biologyWordInput.addEventListener('keypress', (event) => {
             if (event.key === 'Enter') {
                 const word = biologyWordInput.value.trim();
-                 debouncedGetWordBreakdown(word);
+                   getWordBreakdown(word); 
             }
         });
 
