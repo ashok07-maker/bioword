@@ -451,14 +451,6 @@ input.addEventListener("input", async () => {
                 return;
             }
 
-            // ---- Debounce helper ----
-function debounce(func, delay) {
-  let timeoutId;
-  return function (...args) {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => func.apply(this, args), delay);
-  };
-}
 
 // ---- Debounced wrapper of your existing getWordBreakdown ----
 const debouncedGetWordBreakdown = debounce(getWordBreakdown, 800);
